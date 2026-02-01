@@ -1,18 +1,17 @@
-import type { FC, PropsWithChildren } from 'hono/jsx'
+import type { ComponentChildren } from 'preact'
 
 interface CardProps {
     title:string
     description?:string
+    children?:ComponentChildren
 }
 
-export const Card:FC<PropsWithChildren<CardProps>> = ({
-    title,
-    description,
-    children
-}) => (
-    <section class="card">
-        <h2>{title}</h2>
-        {description && <p>{description}</p>}
-        {children}
-    </section>
-)
+export function Card ({ title, description, children }:CardProps) {
+    return (
+        <section class="card">
+            <h2>{title}</h2>
+            {description && <p>{description}</p>}
+            {children}
+        </section>
+    )
+}
