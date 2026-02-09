@@ -1,31 +1,39 @@
-import { useState } from 'preact/hooks'
+import type { Signal } from '@preact/signals'
+import { type FunctionComponent } from 'preact'
+import { Button } from './button.js'
 import { Card } from './card.js'
 
-export function Counter ({ initial = 0 }:{ initial?:number }) {
-    const [count, setCount] = useState(initial)
-
+export const Counter:FunctionComponent<{ count:Signal<number> }> = function (
+    { count }:{ count:Signal<number> }
+) {
     return (
-        <Card title="Counter" description="An interactive counter with Preact hydration:">
+        <Card
+            title="Counter"
+            description={
+                'An interactive counter with '
+                + 'Preact hydration:'
+            }
+        >
             <div class="counter-display">{count}</div>
             <div class="counter-buttons">
-                <button
+                <Button
                     class="btn"
-                    onClick={() => setCount(c => c - 1)}
+                    onClick={() => { count.value-- }}
                 >
                     &ndash;
-                </button>
-                <button
+                </Button>
+                <Button
                     class="btn"
-                    onClick={() => setCount(0)}
+                    onClick={() => { count.value = 0 }}
                 >
                     Reset
-                </button>
-                <button
+                </Button>
+                <Button
                     class="btn"
-                    onClick={() => setCount(c => c + 1)}
+                    onClick={() => { count.value++ }}
                 >
                     +
-                </button>
+                </Button>
             </div>
         </Card>
     )

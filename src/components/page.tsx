@@ -1,9 +1,9 @@
 import type { ComponentChildren } from 'preact'
-import type { AppProps } from '../app.js'
+import type { SerializedState } from '../state.js'
 
 export interface PageProps {
     title:string
-    appProps:AppProps
+    pageProps:SerializedState
     isDev?:boolean
     assets?:{ css:string, js:string }
     children?:ComponentChildren
@@ -11,7 +11,7 @@ export interface PageProps {
 
 export function Page ({
     title,
-    appProps,
+    pageProps,
     isDev = false,
     assets,
     children
@@ -19,7 +19,9 @@ export function Page ({
     const cssPath = assets?.css ||
         (isDev ? '/src/style.css' : '/assets/index.css')
     const jsPath = assets?.js ||
-        (isDev ? '/src/client/index.tsx' : '/assets/index.js')
+        (isDev ?
+            '/src/client/index.tsx' :
+            '/assets/index.js')
 
     return (
         <html lang="en">
@@ -27,7 +29,10 @@ export function Page ({
                 <meta charset="UTF-8" />
                 <meta
                     name="viewport"
-                    content="width=device-width, initial-scale=1.0"
+                    content={
+                        'width=device-width, '
+                        + 'initial-scale=1.0'
+                    }
                 />
                 <title>{title}</title>
                 <link rel="stylesheet" href={cssPath} />
@@ -39,11 +44,15 @@ export function Page ({
 
                 <script
                     dangerouslySetInnerHTML={{
-                        __html: 'window.__INITIAL_STATE__ = '
-                            + JSON.stringify(appProps)
+                        __html:
+                            'window.__INITIAL_STATE__ = '
+                            + JSON.stringify(pageProps)
                     }}
                 />
-                <script type="module" src={jsPath}></script>
+                <script
+                    type="module"
+                    src={jsPath}
+                ></script>
             </body>
         </html>
     )

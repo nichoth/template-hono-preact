@@ -1,4 +1,4 @@
-import type { ComponentChildren } from 'preact'
+import type { FunctionComponent, ComponentChildren } from 'preact'
 
 interface CardProps {
     title:string
@@ -6,7 +6,11 @@ interface CardProps {
     children?:ComponentChildren
 }
 
-export function Card ({ title, description, children }:CardProps) {
+export const Card:FunctionComponent<CardProps> = function ({
+    title,
+    description,
+    children
+}) {
     return (
         <section class="card">
             <h2>{title}</h2>
