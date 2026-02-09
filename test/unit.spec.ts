@@ -44,7 +44,7 @@ describe('Hono worker', () => {
                     'window.__INITIAL_STATE__'
                 )
                 expect(html).toContain(
-                    '"initialCount":5'
+                    '"count":5'
                 )
             }
         )

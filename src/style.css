@@ -1,11 +1,12 @@
 @import url("@substrate-system/css-normalize");
+@import url("@substrate-system/a11y");
 @import url("./components/card.css");
 @import url("./components/button.css");
 
 :root {
     --color-bg: #fafafa;
     --color-text: black;
-    --color-text-muted: #666;
+    --color-text-muted: black;  /* no muted color */
     --color-white: white;
     --color-primary: #2563eb;
     --color-primary-dark: #1d4ed8;
@@ -43,6 +44,30 @@ body {
         margin-bottom: 0.5rem;
         font-size: 2rem;
     }
+}
+
+nav ul {
+    list-style: none;
+    display: flex;
+    gap: 1.5rem;
+    justify-content: center;
+    padding: 0;
+    margin: 0;
+}
+
+nav a {
+    text-decoration: none;
+    color: var(--color-text-muted);
+    transition: color 0.2s;
+
+    &:hover {
+        color: var(--color-primary);
+    }
+}
+
+nav .active a {
+    color: var(--color-primary);
+    font-weight: 600;
 }
 
 .subtitle {

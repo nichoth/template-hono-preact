@@ -1,20 +1,24 @@
 import { hydrate, render } from 'preact'
-import { App, type AppProps } from '../app.js'  // <-- imported by server also
+import { App } from '../app.js'
+import { State, type SerializedState } from '../state.js'
 
 declare global {
     interface Window {
-        __INITIAL_STATE__?:AppProps
+        __INITIAL_STATE__?:SerializedState
     }
 }
 
 const root = document.getElementById('root')
-const state = window.__INITIAL_STATE__
+const initialState = window.__INITIAL_STATE__
 
 if (root) {
-    const props:AppProps = state ?? { initialCount: 0 }
-    if (state) {
-        hydrate(<App {...props} />, root)
+    const state = await State({
+        count: initialState?.count,
+    })
+
+    if (initialState) {
+        hydrate(<App state={state} />, root)
     } else {
-        render(<App {...props} />, root)
+        render(<App state={state} />, root)
     }
 }
