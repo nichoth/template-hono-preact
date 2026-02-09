@@ -1,23 +1,30 @@
-# template hono datastar
+# template hono preact
 
-A template for [datastar apps](https://data-star.dev/) with
-[Hono](https://hono.dev/) and Cloudflare.
+A template for web apps with [Hono](https://hono.dev/) and
+[Preact](https://preactjs.com/).
 
-There is no client-side JS here, except for the data-star library.
-This uses [Hono](https://hono.dev/) to keep any application state on the server
-(it uses in-memory state only), and clicks result in a request to the server,
-which sends back the updated data.
+This is a server that renders JSX with `preact-render-to-string`.
+At build time, `vite build` (via `@cloudflare/vite-plugin`) produces:
+1. A Cloudflare Worker bundle (the server)                                    
+2. Client-side JS/CSS assets in public/
+
+At request time, when the Worker handles a GET `/` request, it SSRs the page.
+`preact-render-to-string` renders `<App initialCount={5} />` into HTML, the Page
+component wraps it in a full document, and the __INITIAL_STATE__ script tag
+is injected. The server sets the initial count state to `5`.
 
 
 <details><summary><h2>Contents</h2></summary>
 
 <!-- toc -->
 
+- [Test](#test)
 - [Develop](#develop)
   * [Local Dev](#local-dev)
 - [Components](#components)
   * [`page.tsx`](#pagetsx)
-- [The Datastar SSR pattern](#the-datastar-ssr-pattern)
+- [The SSR + Hydration Pattern](#the-ssr--hydration-pattern)
+- [Notes](#notes)
 
 <!-- tocstop -->
 
@@ -27,6 +34,8 @@ which sends back the updated data.
 
 ### Run tests
 
+This is both unit tests and integration tests.
+
 ```sh
 npm test
 ```
@@ -34,7 +43,7 @@ npm test
 ### Open a browser with visual test results
 
 ```sh
-npm run test:ui
+npm run test:open
 ```
 
 ## Develop
@@ -65,34 +74,38 @@ In the worker file (`./src/server/index.tsx`), it checks if we are in local dev
 or production. In dev, `ASSETS` doesn't exist; it returns `notFound()` and Vite
 handles it. In production, `ASSETS` does exist, so it serves the static asset.
 
-When you run npm start, the Cloudflare Vite plugin routes requests to your
-Hono server at [`src/server/index.tsx:33`](./src/server/index.tsx#L126), which renders the Page component.
-This Page component uses the `.tsx` components (TimestampCard, GreetingCard,
-CounterCard, QuoteCard) which are server-side rendered.
+When you run `npm start`, the Cloudflare Vite plugin routes requests
+to your Hono server at
+[`src/server/index.tsx`](./src/server/index.tsx), which renders the
+`Page` component. The shared `App` component (containing `Counter`,
+`Card`) is server-side rendered into that page.
 
 ### `page.tsx`
 
 The `page.tsx` is a layout skeleton that accepts props.
 
 ```ts
-export const Page:FC<PropsWithChildren<PageProps>> = ({
+export function Page ({
     title,
-    signals = {},
+    appProps,
+    isDev = false,
+    assets,
     children
-})
+}:PageProps)
 ```
 
-Any site pages should extend this template, and pass in content and signals.
-An example is [./src/components/home-page.tsx](./src/components/home-page.tsx).
+It injects `appProps` as `window.__INITIAL_STATE__` so the client
+can hydrate with the same data.
 
 ---
 
-## The Datastar SSR pattern
+## The SSR + Hydration Pattern
 
-* Server renders the full HTML with components
-* `data-signals` initializes the reactive state
-* Datastar library (loaded via CDN) handles client-side reactivity
-* API endpoints return SSE responses that update signals
+* Server renders the full HTML with Preact components
+  via `preact-render-to-string`
+* `window.__INITIAL_STATE__` passes initial props to the client
+* The client calls `hydrate()` to attach event handlers
+  to the existing DOM
 
 ---
 

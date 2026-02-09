@@ -2,6 +2,7 @@ import { Hono } from 'hono'
 import { cors } from 'hono/cors'
 import render from 'preact-render-to-string'
 import { App, type AppProps } from '../app.js'
+import { Page } from '../components/page.js'
 import manifestJson from '../../public/client/vite-manifest.json'
 
 type Bindings = {
@@ -25,35 +26,25 @@ const app = new Hono<{ Bindings:Bindings }>()
 app.use('/api/*', cors())
 
 /**
- * Main page — SSR with Preact, hydrated on the client
+ * Main page -- SSR with Preact, hydrated on the client
  */
 app.get('/', (c) => {
-    const isDev = c.env.NODE_ENV !== 'production'
-    const assets = isDev ? null : getAssetPaths()
-    const cssPath = assets?.css || (isDev ? '/src/style.css' : '/client/assets/index.css')
-    const jsPath = assets?.js || (isDev ? '/src/client/index.tsx' : '/client/assets/index.js')
-
-    // Props shared between SSR and hydration
+    const isDev = import.meta.env.DEV
+    const assets = isDev ? undefined : getAssetPaths()
     const appProps:AppProps = { initialCount: 5 }
 
-    // Render the App component to an HTML string
-    const ssrHtml = render(<App {...appProps} />)
+    const html = '<!DOCTYPE html>' + render(
+        <Page
+            title="Hono + Preact"
+            appProps={appProps}
+            isDev={isDev}
+            assets={assets}
+        >
+            <App {...appProps} />
+        </Page>
+    )
 
-    return c.html(`<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Hono + Preact</title>
-    <link rel="stylesheet" href="${cssPath}" />
-</head>
-<body>
-    <div id="root">${ssrHtml}</div>
-
-    <script>window.__INITIAL_STATE__ = ${JSON.stringify(appProps)}</script>
-    <script type="module" src="${jsPath}"></script>
-</body>
-</html>`)
+    return c.html(html)
 })
 
 /**
@@ -87,10 +78,13 @@ function getAssetPaths ():{ css:string, js:string } {
     if (entry) {
         cachedAssets = {
             js: `/${entry.file}`,
-            css: entry.css?.[0] ? `/${entry.css?.[0]}` : ''
+            css: entry.css?.[0] ? `/${entry.css[0]}` : ''
         }
         return cachedAssets
     }
 
-    return { css: '/client/assets/index.css', js: '/client/assets/index.js' }
+    return {
+        css: '/assets/index.css',
+        js: '/assets/index.js',
+    }
 }
