@@ -18,7 +18,10 @@ is injected. The server sets the initial count state to `5`.
 
 <!-- toc -->
 
+- [Use](#use)
 - [Test](#test)
+  * [Run tests](#run-tests)
+  * [Open a browser with visual test results](#open-a-browser-with-visual-test-results)
 - [Develop](#develop)
   * [Local Dev](#local-dev)
 - [Components](#components)
@@ -29,6 +32,14 @@ is injected. The server sets the initial count state to `5`.
 <!-- tocstop -->
 
 </details>
+
+## Use
+
+Use the template button in Github's UI, then start the docs:
+
+```sh
+mv ./README.example.md README.md
+```
 
 ## Test
 
