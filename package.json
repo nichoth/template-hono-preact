@@ -21,14 +21,14 @@
     "@substrate-system/button": "^0.0.31",
     "@substrate-system/css-normalize": "^0.0.13",
     "@substrate-system/dom": "^0.1.13",
-    "hono": "^4.11.3",
+    "hono": "^4.11.9",
     "preact": "^10.28.3",
     "preact-render-to-string": "^6.6.5",
     "route-event": "^7.4.0"
   },
   "devDependencies": {
-    "@cloudflare/vite-plugin": "^1.19.0",
-    "@cloudflare/vitest-pool-workers": "^0.12.4",
+    "@cloudflare/vite-plugin": "^1.23.1",
+    "@cloudflare/vitest-pool-workers": "^0.12.10",
     "@cloudflare/workers-types": "^4.20250109.0",
     "@hono/vite-dev-server": "^0.23.0",
     "@substrate-system/debug": "^0.9.38",
@@ -41,7 +41,7 @@
     "browserslist": "^4.28.1",
     "concurrently": "^9.1.2",
     "esbuild": "^0.27.2",
-    "eslint": "^8.57.1",
+    "eslint": "^9.26.0",
     "eslint-config-standard": "^17.1.0",
     "lightningcss": "^1.30.2",
     "markdown-toc": "^1.2.0",
@@ -51,7 +51,7 @@
     "typescript": "^5.9.3",
     "vite": "^7.3.0",
     "vitest": "^3.2.4",
-    "wrangler": "^4.56.0"
+    "wrangler": "^4.63.0"
   },
   "author": "nichoth <nichoth@nichoth.com> (https://nichoth.com)"
 }
